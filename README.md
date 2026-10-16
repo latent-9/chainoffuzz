@@ -13,8 +13,9 @@ A receipt is only valid if you can rerun it yourself.
 | target | crate | iterations | accepted | rejected | panics |
 |---|---|---|---|---|---|
 | sbpf-elf | solana-sbpf 0.25.0 | 100,000,000 | 65,110 | 99,934,890 | 0 |
+| block-component | solana-entry 4.5.0-alpha.2 | 10,000,000 | 548,534 | 9,451,466 | 0 |
 
-Rerun it: `cargo run --release -- sbpf-elf 100000000`, default seed 12648430, about 7 minutes. Two independent runs produced identical counts, digit for digit.
+Rerun: `cargo run --release -- <target> <iterations>`, default seed 12648430. The sbpf-elf campaign was run twice independently and produced identical counts, digit for digit.
 
 ## Usage
 
@@ -27,6 +28,7 @@ Findings land in `findings/` as the exact input that produced a panic, named by 
 ## Targets
 
 - `sbpf-elf`: ELF parse and verify path of solana-sbpf, the parser behind on chain program deployment. Seeds are real SPL program binaries in `seeds/sbpf-elf/` plus synthetic minimal ELFs for every sbpf version.
+- `block-component`: wincode deserialization of block markers, the wire format carrying block footers, headers and update-parent markers between leader and replay. Seeds are synthetic valid markers for every variant.
 
 ## Adding a target
 
