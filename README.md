@@ -12,9 +12,9 @@ A receipt is only valid if you can rerun it yourself.
 
 | target | crate | iterations | accepted | rejected | panics |
 |---|---|---|---|---|---|
-| sbpf-elf | solana-sbpf 0.25.0 | 10,000,000 | 6,524 | 9,993,476 | 0 |
+| sbpf-elf | solana-sbpf 0.25.0 | 100,000,000 | 65,110 | 99,934,890 | 0 |
 
-Rerun it: `cargo run --release -- sbpf-elf 10000000`, default seed 12648430, 49 seconds.
+Rerun it: `cargo run --release -- sbpf-elf 100000000`, default seed 12648430, about 7 minutes. Two independent runs produced identical counts, digit for digit.
 
 ## Usage
 
