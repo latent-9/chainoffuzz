@@ -1,0 +1,12 @@
+[package]
+name = "chainoffuzz"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+solana-sbpf = "=0.25.0"
+rand = "0.8"
+
+[profile.release]
+panic = "unwind"
+opt-level = 3
