@@ -6,6 +6,7 @@ edition = "2021"
 [dependencies]
 solana-sbpf = "=0.25.0"
 solana-entry = { version = "=4.5.0-alpha.2", features = ["agave-unstable-api"] }
+solana-ledger = { version = "=4.5.0-alpha.2", features = ["agave-unstable-api"] }
 solana-hash = "4.7.0"
 agave-votor-messages = { version = "=4.5.0-alpha.2", features = ["agave-unstable-api"] }
 solana-bls-signatures = "4.0.1"
@@ -15,3 +16,7 @@ rand = "0.8"
 [profile.release]
 panic = "unwind"
 opt-level = 3
+
+[patch.crates-io]
+rocksdb = { git = "https://github.com/anza-xyz/rust-rocksdb", rev = "4dba80dfe9434e595a971f5b2985ff9ba4fb31e7" }
+librocksdb-sys = { git = "https://github.com/anza-xyz/rust-rocksdb", rev = "4dba80dfe9434e595a971f5b2985ff9ba4fb31e7" }
