@@ -8,7 +8,7 @@ The philosophy is simple. A parser that guards consensus must survive an adversa
 
 ## Receipts
 
-A receipt is only valid if you can rerun it yourself.
+A receipt is only valid if you can rerun it yourself. Campaigns last run 2026-10-17.
 
 | target | crate | iterations | accepted | rejected | panics |
 |---|---|---|---|---|---|
@@ -16,14 +16,21 @@ A receipt is only valid if you can rerun it yourself.
 | block-component | solana-entry 4.5.0-alpha.2 | 10,000,000 | 548,534 | 9,451,466 | 0 |
 | votor-wire | agave-votor-messages 4.5.0-alpha.2 | 10,000,000 | 256,597 | 9,743,403 | 0 |
 | shred-ingress | solana-ledger 4.5.0-alpha.2 | 10,000,000 | 12 | 9,999,988 | 0 |
+| **total** | | **130,000,000** | **870,253** | **129,129,747** | **0** |
 
 Rerun: `cargo run --release -- <target> <iterations>`, default seed 12648430. The sbpf-elf campaign was run twice independently and produced identical counts, digit for digit.
 
 ## Usage
 
 ```bash
-cargo run --release -- sbpf-elf 10000000
+cargo run --release -- <target> <iterations>
+
+# examples
+cargo run --release -- sbpf-elf 100000000
+cargo run --release -- votor-wire 10000000
 ```
+
+Targets: `sbpf-elf`, `block-component`, `votor-wire`, `shred-ingress`. Run without arguments for the list.
 
 Findings land in `findings/` as the exact input that produced a panic, named by iteration. A finding is a bug until proven otherwise. Zero findings is also a result, as long as the receipt says how hard you looked.
 
