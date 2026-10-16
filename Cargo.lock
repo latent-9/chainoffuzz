@@ -340,7 +340,9 @@ dependencies = [
 name = "chainoffuzz"
 version = "0.1.0"
 dependencies = [
+ "agave-votor-messages",
  "rand 0.8.8",
+ "solana-bls-signatures",
  "solana-entry",
  "solana-hash",
  "solana-sbpf",

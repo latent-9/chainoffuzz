@@ -1,5 +1,6 @@
 pub mod sbpf_elf;
 pub mod block_component;
+pub mod votor_wire;
 
 pub trait Target {
     fn name(&self) -> &'static str;
@@ -12,5 +13,6 @@ pub fn all() -> Vec<Box<dyn Target>> {
     vec![
         Box::new(sbpf_elf::SbpfElf),
         Box::new(block_component::BlockComponent),
+        Box::new(votor_wire::VotorWire),
     ]
 }
