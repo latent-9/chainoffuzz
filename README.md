@@ -8,17 +8,19 @@ The philosophy is simple. A parser that guards consensus must survive an adversa
 
 ## Receipts
 
-A receipt is only valid if you can rerun it yourself. Campaigns last run 2026-10-17.
+A receipt is only valid if you can rerun it yourself. All campaigns use the pinned crate versions below, one engine, seed 12648430.
 
 | target | crate | iterations | accepted | rejected | panics |
 |---|---|---|---|---|---|
 | sbpf-elf | solana-sbpf 0.25.0 | 100,000,000 | 65,110 | 99,934,890 | 0 |
-| block-component | solana-entry 4.5.0-alpha.2 | 10,000,000 | 548,534 | 9,451,466 | 0 |
-| votor-wire | agave-votor-messages 4.5.0-alpha.2 | 10,000,000 | 256,597 | 9,743,403 | 0 |
-| shred-ingress | solana-ledger 4.5.0-alpha.2 | 10,000,000 | 12 | 9,999,988 | 0 |
-| **total** | | **130,000,000** | **870,253** | **129,129,747** | **0** |
+| block-component | solana-entry 4.5.0-alpha.2 | 10,000,000 | 447,763 | 9,552,237 | 0 |
+| votor-wire | agave-votor-messages 4.5.0-alpha.2 | 10,000,000 | 256,594 | 9,743,406 | 0 |
+| shred-ingress | solana-ledger 4.5.0-alpha.2 | 10,000,000 | 187,595 | 9,812,405 | 0 |
+| **total** | | **130,000,000** | **957,062** | **129,042,938** | **0** |
 
-Rerun: `cargo run --release -- <target> <iterations>`, default seed 12648430. The sbpf-elf campaign was run twice independently and produced identical counts, digit for digit.
+Rerun: `cargo run --release -- <target> <iterations>`, default seed 12648430. Same seed, same engine, same counts.
+
+The sbpf-elf row is the 2026-10-17 campaign; nothing that target runs against has changed since, so its counts remain reproducible. It was run twice independently at the time and produced identical counts, digit for digit. The other three targets were re-run 2026-11-03 after their seed corpora were fixed or extended.
 
 ## Usage
 
@@ -37,9 +39,15 @@ Findings land in `findings/` as the exact input that produced a panic, named by 
 ## Targets
 
 - `sbpf-elf`: ELF parse and verify path of solana-sbpf, the parser behind on chain program deployment. Seeds are real SPL program binaries in `seeds/sbpf-elf/` plus synthetic minimal ELFs for every sbpf version.
-- `block-component`: wincode deserialization of block markers, the wire format carrying block footers, headers and update-parent markers between leader and replay. Seeds are synthetic valid markers for every variant.
-- `votor-wire`: the hand written unsafe deserialization of consensus votes and certificates, the first gate for all network input into votor. Seeds are real signed vote messages.
-- `shred-ingress`: shred deserialization, the wire format every peer receives from turbine before blocks exist. Seeds are synthetic shreds anchored on the wire type tags; the accepted rate is low because the header layout is strict, which is the point of the boundary.
+- `block-component`: wincode deserialization of block markers, the wire format carrying block footers, headers and update-parent markers between leader and replay. Seeds are synthetic valid markers for every variant, including footers carrying reward certificates.
+- `votor-wire`: the hand written unsafe deserialization of consensus votes and certificates, the first gate for all network input into votor. Seeds are synthetic signed vote messages generated from a fixed keypair, so the corpus is byte-identical across runs.
+- `shred-ingress`: shred deserialization, the wire format every peer receives from turbine before blocks exist. Seeds are synthetic merkle shreds carrying valid `ShredVariant` bytes (`MerkleData`/`MerkleCode`, proof size 6) at exact wire sizes: 1203 bytes for data, 1228 for coding. The shred version field is not validated by this parser; turbine filters it downstream.
+
+## Limitations
+
+- The mutator keeps inputs at 64 bytes or larger, so panics that only trigger on shorter inputs are out of reach for this engine.
+- The oracle catches Rust panics. Stack exhaustion and aborts from C dependencies are not findings here.
+- Footers are seeded with reward certificates; the finalization certificate payload (`VotesAggregate`) is not constructible outside solana-entry's dev feature, so that one nested path is only reached by mutation.
 
 ## Adding a target
 
