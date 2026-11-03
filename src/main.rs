@@ -37,6 +37,9 @@ fn main() {
     let seed: u64 = args.get(3).and_then(|s| s.parse().ok()).unwrap_or(0xC0FFEE);
 
     let findings_dir = Path::new("findings");
+    // The oracle captures panics as findings; the default hook would print
+    // every one of them to stderr and drown the progress output.
+    std::panic::set_hook(Box::new(|_| {}));
     let seeds = target.seeds();
     if seeds.is_empty() {
         eprintln!("no seeds for target {}", target.name());
