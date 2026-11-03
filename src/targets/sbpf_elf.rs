@@ -55,7 +55,28 @@ fn minimal_elf(flags: u64) -> Vec<u8> {
     e
 }
 
-pub struct SbpfElf;
+pub struct SbpfElf {
+    loader: Arc<BuiltinProgram<NullCtx>>,
+}
+
+impl SbpfElf {
+    pub fn new() -> Self {
+        Self {
+            loader: Arc::new(BuiltinProgram::new_loader(Config {
+                max_call_depth: 64,
+                stack_frame_size: 8192,
+                enable_stack_frame_gaps: true,
+                ..Config::default()
+            })),
+        }
+    }
+}
+
+impl Default for SbpfElf {
+    fn default() -> Self {
+        Self::new()
+    }
+}
 
 impl Target for SbpfElf {
     fn name(&self) -> &'static str {
@@ -89,14 +110,9 @@ impl Target for SbpfElf {
     }
 
     fn run(&self, input: &[u8]) -> Result<(), String> {
-        let loader = Arc::new(BuiltinProgram::new_loader(Config {
-            max_call_depth: 64,
-            stack_frame_size: 8192,
-            enable_stack_frame_gaps: true,
-            ..Config::default()
-        }));
+        let loader = self.loader.clone();
         crate::oracle::guard(move || {
-            let executable = Executable::<NullCtx>::from_elf(input, loader.clone())
+            let executable = Executable::<NullCtx>::from_elf(input, loader)
                 .map_err(|e| format!("parse: {e}"))?;
             executable
                 .verify::<RequisiteVerifier>()

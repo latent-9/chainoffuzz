@@ -12,7 +12,7 @@ pub trait Target {
 
 pub fn all() -> Vec<Box<dyn Target>> {
     vec![
-        Box::new(sbpf_elf::SbpfElf),
+        Box::new(sbpf_elf::SbpfElf::new()),
         Box::new(block_component::BlockComponent),
         Box::new(votor_wire::VotorWire),
         Box::new(shred_ingress::ShredIngress),
