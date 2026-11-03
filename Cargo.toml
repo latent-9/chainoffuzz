@@ -7,7 +7,7 @@ edition = "2021"
 solana-sbpf = "=0.25.0"
 solana-entry = { version = "=4.5.0-alpha.2", features = ["agave-unstable-api"] }
 solana-ledger = { version = "=4.5.0-alpha.2", features = ["agave-unstable-api"] }
-solana-hash = "4.7.0"
+solana-hash = "=4.7.0"
 agave-votor-messages = { version = "=4.5.0-alpha.2", features = ["agave-unstable-api"] }
 solana-bls-signatures = "4.0.1"
 wincode = "0.6.3"
