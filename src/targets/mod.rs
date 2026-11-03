@@ -18,3 +18,36 @@ pub fn all() -> Vec<Box<dyn Target>> {
         Box::new(shred_ingress::ShredIngress),
     ]
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn seeds_never_panic() {
+        for t in all() {
+            for (i, seed) in t.seeds().iter().enumerate() {
+                if let Err(msg) = t.run(seed) {
+                    assert!(
+                        !msg.starts_with("PANIC"),
+                        "{} seed #{} panics: {msg}",
+                        t.name(),
+                        i
+                    );
+                }
+            }
+        }
+    }
+
+    #[test]
+    fn every_target_accepts_at_least_one_seed() {
+        for t in all() {
+            let seeds = t.seeds();
+            assert!(
+                seeds.iter().any(|s| t.run(s).is_ok()),
+                "{} rejects every one of its own seeds",
+                t.name()
+            );
+        }
+    }
+}
