@@ -9,7 +9,10 @@ use std::num::NonZero;
 use std::path::Path;
 
 fn seed_vote_message(slot: u64) -> Vec<u8> {
-    let keypair = Keypair::new();
+    // Fixed input key material: the seed corpus must be byte-identical across
+    // runs so a campaign is reproducible from the seed alone.
+    let keypair =
+        Keypair::derive(b"chainoffuzz/votor-wire seed keypair").expect("fixed IKM derives a keypair");
     let vote = Vote::new_skip_vote(slot);
     let payload = get_vote_payload_to_sign(vote, 7);
     let signature = keypair.sign(&payload).into();
